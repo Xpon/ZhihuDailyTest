@@ -1,6 +1,9 @@
 package com.example.huajie.zhihudailytest.request;
 
 
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +22,7 @@ public class HttpRequest {
     public HttpRequest(URL url){
         newsURL = url;
     }
-    public void sendRequest(){
+    public String sendHttpRequest() {
         try {
             conn = (HttpURLConnection) newsURL.openConnection();
             conn.setRequestMethod("GET");
@@ -29,22 +32,25 @@ public class HttpRequest {
             br = new BufferedReader(new InputStreamReader(in));
             StringBuilder response = new StringBuilder();
             String line;
-            while((line=br.readLine())!=null){
+            while ((line = br.readLine()) != null) {
                 response.append(line);
             }
+            Log.e("date","respones="+response);
+            return response.toString();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(br!=null){
+        } finally {
+            if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(conn!=null){
+            if (conn != null) {
                 conn.disconnect();
             }
         }
+        return null;
     }
 }

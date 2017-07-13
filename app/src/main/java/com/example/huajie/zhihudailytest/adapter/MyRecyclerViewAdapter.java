@@ -1,6 +1,7 @@
 package com.example.huajie.zhihudailytest.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.huajie.zhihudailytest.R;
-import com.example.huajie.zhihudailytest.bean.News;
+import com.example.huajie.zhihudailytest.bean.Story;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -19,13 +23,20 @@ import java.util.List;
  */
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+    private RecyItemOnclick recyItemOnclick;
     private Context mContext;
-    private List<News> mNewsList;
-    public MyRecyclerViewAdapter(List<News> list){
+    private List<Story> mNewsList;
+    public MyRecyclerViewAdapter(List<Story> list){
         mNewsList=list;
     }
+    public interface RecyItemOnclick{
+        public void onItemOnclick(View v , int position);
+    }
+    public void setRecyItenOnclick(RecyItemOnclick recyItemOnclick){
+        this.recyItemOnclick=recyItemOnclick;
+    }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         CardView cardView;
         ImageView news_image;
         TextView news_title;
@@ -37,6 +48,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             news_image= (ImageView) cardView.findViewById(R.id.news_image);
             news_title= (TextView) cardView.findViewById(R.id.news_title);
             news_summary= (TextView) cardView.findViewById(R.id.news_summary);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position =getPosition();
+            recyItemOnclick.onItemOnclick(v,position);
         }
     }
     @Override
@@ -50,9 +68,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        News news=mNewsList.get(position);
-        holder.news_title.setText(news.getNewsTitle());
-        holder.news_summary.setText(news.getNewsSummary());
+        Story story =mNewsList.get(position);
+        holder.news_title.setText(story.getId());
+        holder.news_summary.setText(story.getTitle());
+        try {
+            Glide.with(mContext).load(new URL(story.getImageUrl())).into(holder.news_image);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
