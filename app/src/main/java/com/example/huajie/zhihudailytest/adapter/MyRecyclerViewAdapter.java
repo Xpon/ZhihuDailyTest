@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.huajie.zhihudailytest.R;
+import com.example.huajie.zhihudailytest.Utils.Constacts;
 import com.example.huajie.zhihudailytest.bean.Story;
+import com.example.huajie.zhihudailytest.request.HttpRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +30,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private RecyItemOnclick recyItemOnclick;
     private Context mContext;
     private List<Story> mNewsList;
-    public MyRecyclerViewAdapter(List<Story> list){
+    private int newsPager;
+    public MyRecyclerViewAdapter(List<Story> list,int pager){
         mNewsList=list;
+        newsPager=pager;
     }
     public interface RecyItemOnclick{
         public void onItemOnclick(View v , int position);
@@ -68,7 +74,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Story story =mNewsList.get(position);
+        Story story =getCurrentNews().get(position);
         holder.news_title.setText(story.getId());
         holder.news_summary.setText(story.getTitle());
         try {
@@ -80,6 +86,19 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public int getItemCount() {
-        return mNewsList.size();
+        return getCurrentNews().size();
+    }
+    private List<Story> getCurrentNews(){
+        List<Story> currList = new ArrayList<Story>();
+        List<String> idList = new ArrayList<String>();
+        int index=Integer.parseInt(Constacts.Date.getDate());
+        String currentDate= String.valueOf(index-newsPager-1);
+        currList.clear();
+        for(Story story:mNewsList){
+            if(currentDate.equals(story.getDate())){
+                currList.add(story);
+            }
+        }
+        return currList;
     }
 }

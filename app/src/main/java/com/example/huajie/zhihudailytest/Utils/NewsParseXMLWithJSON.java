@@ -20,49 +20,51 @@ import java.util.List;
  */
 
 public class NewsParseXMLWithJSON {
-    public  static List<Story> stories = new ArrayList<Story>();
 
-    public static void parseJSONWithStory(String jsonData){
+
+
+    public static List<Story> parseJSONWithStory(String jsonData,List<Story> stories){
         try {
-            Log.e("huajie","parseJSONWithStory start");
-            JSONObject jsonObject = new JSONObject(jsonData);
-            String date = jsonObject.getString("date");
-            if(jsonObject.has("top_stories")) {
-                JSONArray jsonArray_top = jsonObject.getJSONArray("top_stories");
-                for (int i = 0; i < jsonArray_top.length(); i++) {
-                    Story top_story = new Story();
-                    JSONObject jsonObject_top = jsonArray_top.getJSONObject(i);
-                    top_story.setImageUrl(jsonObject_top.getString("image"));
-                    Log.e("image", "image=" + jsonObject_top.getString("image"));
-                    top_story.setId(jsonObject_top.getString("id"));
-                    top_story.setTitle(jsonObject_top.getString("title"));
-                    top_story.setDate(date);
-                    stories.add(top_story);
-                    Log.e("huajie", "stories.size=" + stories.size());
+            if(jsonData!=null) {
+
+                JSONObject jsonObject = new JSONObject(jsonData);
+                String date = jsonObject.getString("date");
+                if (jsonObject.has("top_stories")) {
+                    JSONArray jsonArray_top = jsonObject.getJSONArray("top_stories");
+                    for (int i = 0; i < jsonArray_top.length(); i++) {
+                        Story top_story = new Story();
+                        JSONObject jsonObject_top = jsonArray_top.getJSONObject(i);
+                        top_story.setImageUrl(jsonObject_top.getString("image"));
+                        top_story.setId(jsonObject_top.getString("id"));
+                        top_story.setTitle(jsonObject_top.getString("title"));
+                        top_story.setDate(date);
+                        stories.add(top_story);
+                        Log.e("huajie", "stories.size=" + stories.size());
+                    }
                 }
-            }
 
-            JSONArray jsonArray = jsonObject.getJSONArray("stories");
-            for(int i = 0;i<jsonArray.length();i++){
-                Story story=new Story();
-                JSONObject jsonObject1=jsonArray.getJSONObject(i);
-                JSONArray jsonArray_iamge=jsonObject1.getJSONArray("images");
-                story.setImageUrl((String) jsonArray_iamge.get(0));
-                Log.e("image","images="+(String) jsonArray_iamge.get(0));
-                story.setId(jsonObject1.getString("id"));
-                story.setTitle(jsonObject1.getString("title"));
-                story.setDate(date);
-                stories.add(story);
+                JSONArray jsonArray = jsonObject.getJSONArray("stories");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Story story = new Story();
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    JSONArray jsonArray_iamge = jsonObject1.getJSONArray("images");
+                    story.setImageUrl((String) jsonArray_iamge.get(0));
+                    story.setId(jsonObject1.getString("id"));
+                    story.setTitle(jsonObject1.getString("title"));
+                    story.setDate(date);
+                    stories.add(story);
+                }
+                HashSet hashSet = new HashSet(stories);
+                stories.clear();
+                stories.addAll(hashSet);
+                Collections.sort(stories);
+                return stories;
             }
-            HashSet hashSet =new HashSet(stories);
-            stories.clear();
-            stories.addAll(hashSet);
-            Collections.sort(stories);
-
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 }

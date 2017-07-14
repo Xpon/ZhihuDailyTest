@@ -1,7 +1,6 @@
 package com.example.huajie.zhihudailytest.request;
 
 
-import android.net.Uri;
 import android.util.Log;
 
 import java.io.BufferedReader;
