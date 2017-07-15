@@ -28,10 +28,10 @@ public class NewsParseXMLWithJSON {
 
 
 
-    public static List<Story> parseJSONWithStory(String jsonData,List<Story> stories){
+    public static List<Story> parseJSONWithStory(String jsonData){
         try {
+            List<Story> stories = new ArrayList<>();
             if(jsonData!=null) {
-
                 JSONObject jsonObject = new JSONObject(jsonData);
                 String date = jsonObject.getString("date");
                 if (jsonObject.has("top_stories")) {
