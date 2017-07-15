@@ -29,14 +29,14 @@ import java.util.List;
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
     private RecyItemOnclick recyItemOnclick;
     private Context mContext;
-    private List<Story> mNewsList;
+    private List<Story> mNewsList=null;
     private int newsPager;
     public MyRecyclerViewAdapter(List<Story> list,int pager){
         mNewsList=list;
         newsPager=pager;
     }
     public interface RecyItemOnclick{
-        public void onItemOnclick(View v , int position);
+        public void onItemOnclick(View v , int position ,List<Story> currList);
     }
     public void setRecyItenOnclick(RecyItemOnclick recyItemOnclick){
         this.recyItemOnclick=recyItemOnclick;
@@ -60,7 +60,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         @Override
         public void onClick(View v) {
             int position =getPosition();
-            recyItemOnclick.onItemOnclick(v,position);
+            recyItemOnclick.onItemOnclick(v,position,getCurrentNews());
         }
     }
     @Override
@@ -75,7 +75,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Story story =getCurrentNews().get(position);
-        holder.news_title.setText(story.getId());
+        holder.news_title.setText(story.getQuestion().getTitle());
         holder.news_summary.setText(story.getTitle());
         try {
             Glide.with(mContext).load(new URL(story.getImageUrl())).into(holder.news_image);
@@ -88,15 +88,18 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public int getItemCount() {
         return getCurrentNews().size();
     }
+
+
     private List<Story> getCurrentNews(){
         List<Story> currList = new ArrayList<Story>();
-        List<String> idList = new ArrayList<String>();
         int index=Integer.parseInt(Constacts.Date.getDate());
         String currentDate= String.valueOf(index-newsPager-1);
         currList.clear();
         for(Story story:mNewsList){
             if(currentDate.equals(story.getDate())){
-                currList.add(story);
+                if(story.getQuestion()!=null&&story.getQuestion().getTitle()!=null&&!story.getQuestion().getTitle().equals("")){
+                    currList.add(story);
+                }
             }
         }
         return currList;

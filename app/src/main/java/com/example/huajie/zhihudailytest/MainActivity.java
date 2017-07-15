@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.huajie.zhihudailytest.Utils.Constacts;
 import com.example.huajie.zhihudailytest.Utils.NewsParseXMLWithJSON;
 import com.example.huajie.zhihudailytest.adapter.MyRecyclerViewAdapter;
+import com.example.huajie.zhihudailytest.bean.Question;
 import com.example.huajie.zhihudailytest.bean.Story;
 import com.example.huajie.zhihudailytest.request.HttpRequest;
 
@@ -46,15 +47,16 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerViewAda
     }
 
     @Override
-    public void onItemOnclick(View v, int position) {
-        if(newsList!=null){
-            Story story = newsList.get(position);
-            String id = story.getId();
-            Uri uri = Uri.parse("https://www.baidu.com");
-            Intent intent = new Intent();
-            intent.setAction("android.intent.action.VIEW");
-            intent.setData(uri);
-            startActivity(intent);
+    public void onItemOnclick(View v, int position,List<Story> currlist) {
+        if(currlist!=null){
+            Story story = currlist.get(position);
+            if(story.getQuestion().getUrl()!=null&&!story.getQuestion().getUrl().equals("")) {
+                Uri uri = Uri.parse(story.getQuestion().getUrl());
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(uri);
+                startActivity(intent);
+            }
         }
     }
 
@@ -111,10 +113,15 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerViewAda
                     }
                     for(int i= 0;i<newsList.size();i++){
                         Story story = newsList.get(i);
+                        Log.e("zhihuquestion","id="+story.getId());
                         URL questionUrl = new URL(Constacts.Urls.ZHIHU_DAILY_OFFLINE + story.getId());
                         HttpRequest httpRequest = new HttpRequest(questionUrl);
                         String questionData = httpRequest.sendHttpRequest();
-                        Log.e("zhihuquestion","questionData"+questionData);
+                        Question question = NewsParseXMLWithJSON.parseQusetionWithJsoup(questionData);
+                        if(question!=null) {
+                            Log.e("zhihuquestion","title="+question.getTitle());
+                            story.setQuestion(question);
+                        }
                     }
                 }catch (MalformedURLException e) {
                     e.printStackTrace();

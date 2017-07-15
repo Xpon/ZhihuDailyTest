@@ -34,7 +34,6 @@ public class HttpRequest {
             while ((line = br.readLine()) != null) {
                 response.append(line);
             }
-            Log.e("date","respones="+response);
             return response.toString();
         } catch (IOException e) {
             e.printStackTrace();

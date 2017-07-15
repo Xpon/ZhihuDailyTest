@@ -7,6 +7,15 @@ package com.example.huajie.zhihudailytest.bean;
 public class Question {
     private String id;
     private String url;
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getId() {
         return id;

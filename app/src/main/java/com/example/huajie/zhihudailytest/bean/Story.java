@@ -13,6 +13,15 @@ public class Story implements Comparable {
     private String title;
     private String imageUrl;
     private String id;
+    private Question question;
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 
     public String getDate() {
         return date;
