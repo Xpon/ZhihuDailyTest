@@ -31,7 +31,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MyRecyclerViewAdapter.RecyItemOnclick{
     private static List<Story> newsList = new ArrayList<Story>();
-    private static List<Story> refreshList = new ArrayList<Story>();
     private List<View> viewList = new ArrayList<View>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private MyRecyclerViewAdapter myRecyclerViewAdapter;
@@ -173,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerViewAda
             @Override
             public void run() {
                 try {
+
                     List<Story> list = new ArrayList<Story>();
                     URL url = new URL(Constacts.Urls.ZHIHU_DAILY_NEWS);
                     HttpRequest httpRequest = new HttpRequest(url);
